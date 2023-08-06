@@ -2,7 +2,7 @@
 #include <libTimer.h>
 #include "lcdutils.h"
 #include "lcddraw.h"
-#include "switches.h"
+#include "buttons.h"
 
 #define SQUARE_SIZE 20
 
@@ -47,20 +47,26 @@ void main() {
 
   configureClocks();
   lcd_init();
-  switches_init();
+  buttons_init();
 
   clearScreen(BLACK);
   drawSquare();
 
   while (1) {
-    if (switch_down(SW1)) {
+    if (button_down(BUTTON1)) {
       growSquare();
-    } else if (switch_down(SW2)) {
+    } else if (button_down(BUTTON2)) {
       shrinkSquare();
-    } else if (switch_down(SW3)) {
+    } else if (button_down(BUTTON3)) {
       rotateSquare();
-    } else if (switch_down(SW4)) {
+    } else if (button_down(BUTTON4)) {
       cycleColors();
     }
+  }
+}
+
+void __interrupt_vec(PORT2_VECTOR) Port_2() {
+  if (P2IFG & BUTTONS) {
+    P2IFG &= ~BUTTONS;
   }
 }

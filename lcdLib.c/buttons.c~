@@ -1,0 +1,11 @@
+#include "buttons.h"
+
+void buttons_init() {
+  P1DIR &= ~(BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4); // Set buttons as inputs
+  P1REN |= BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4; // Enable pull-up resistors
+  P1OUT |= BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4; // Set pull-up resistors
+}
+
+int button_down(unsigned char button) {
+  return !(P1IN & button); // Button is pressed if the corresponding bit is 0 (due to pull-up resistors)
+}
