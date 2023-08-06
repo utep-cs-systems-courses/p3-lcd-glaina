@@ -11,7 +11,16 @@
 #include "lcdutils.h"
 #include "msp430.h"
 
+
+/** Screen orientation */
 u_char _orientation = 0;
+
+
+/** Set LCD screen orientation */
+void lcd_setOrientation(u_char orientation) {
+  _orientation = orientation % 4;
+  lcd_init(); // Reinitialize the LCD with the new orientation
+}
 
 /** LCD pin definitions*/
 /** SCLK & MOSI*/

@@ -1,4 +1,4 @@
-all: libLcd.a lcddemo.elf
+all: libLcd.a libSwitches.a lcddemo.elf
 
 CPU             = msp430g2553
 CFLAGS          = -mmcu=${CPU} -Os -I../h 
@@ -11,18 +11,21 @@ AR              = msp430-elf-ar
 libLcd.a: font-11x16.o font-5x7.o font-8x12.o lcdutils.o lcddraw.o
 	$(AR) crs $@ $^
 
+libSwitches.a: switches.o
+	$(AR) crs $@ $^
+
 lcddraw.o: lcddraw.c lcddraw.h lcdutils.h
 lcdutils.o: lcdutils.c lcdutils.h
 
-install: libLcd.a
+install: libLcd.a libSwitches.a
 	mkdir -p ../h ../lib
 	mv $^ ../lib
 	cp *.h ../h
 
 clean:
-	rm -f libLcd.a *.o *.elf
+	rm -f libLcd.a libSwitches.a *.o *.elf
 
-lcddemo.elf: lcddemo.o libLcd.a 
+lcddemo.elf: lcddemo.o libLcd.a libSwitches.a
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lTimer 
 
 load: lcddemo.elf
