@@ -1,0 +1,49 @@
+.data
+    buttonPressed: .word 0  ; Declare buttonPressed variable in data section, initialized to 0
+
+.text
+    .align 2
+    checkButtons:
+        ; Load P2IN into a register
+        mov.w P2IN, r12
+
+        ; Create a jump table for button presses
+        cmp.w #BUTTON1, r12
+        je .button1_pressed
+
+        cmp.w #BUTTON2, r12
+        je .button2_pressed
+
+        cmp.w #BUTTON3, r12
+        je .button3_pressed
+
+        cmp.w #BUTTON4, r12
+        je .button4_pressed
+
+        ; No button is pressed, set buttonPressed to 0
+        jmp .end_checkButtons
+
+    .button1_pressed:
+        ; Button 1 is pressed, set buttonPressed to 1
+        mov.w #1, &buttonPressed
+        jmp .end_checkButtons
+
+    .button2_pressed:
+        ; Button 2 is pressed, set buttonPressed to 2
+        mov.w #2, &buttonPressed
+        jmp .end_checkButtons
+
+    .button3_pressed:
+        ; Button 3 is pressed, set buttonPressed to 3
+        mov.w #3, &buttonPressed
+        jmp .end_checkButtons
+
+    .button4_pressed:
+        ; Button 4 is pressed, set buttonPressed to 4
+        mov.w #4, &buttonPressed
+
+    .end_checkButtons:
+        ; Rest of the checkButtons function using the buttonPressed value
+        ; ...
+
+        ret

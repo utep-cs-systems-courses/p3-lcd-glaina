@@ -36,7 +36,38 @@ void shrinkSquare() {
 
 void rotateSquare() {
   clearScreen(BLACK);
-  lcd_setOrientation((_orientation + 1) % 4); // Rotate orientation 90 degrees clockwise
+
+  // Increment the orientation angle (0, 1, 2, 3), representing (0, 90, 180, 270) degrees
+  static int currentOrientation = 0;
+  currentOrientation = (currentOrientation + 1) % 4;
+
+  // Calculte the new square coordinates after rotation
+  int centerX = squareX;
+  int centerY = squareY;
+  int newX, newY;
+  
+  // Update the LCD orientation based on the currentOrientation variable
+  switch (currentOrientation) {
+      case 0:
+	newX = centerX;
+	newY = centerY;
+        break;
+      case 1:
+        newX = centerY;
+	newY = screenHeight - centerX;
+        break;
+      case 2:
+        newX = screenWidth - centerX;
+	newY = screenHeight - centerY;
+        break;
+      case 3:
+        newX = screenWidth - centerY;
+	newY = centerX;
+        break;
+  }
+
+  squareX = newX;
+  squareY = newY;
   drawSquare();
 }
 
@@ -46,6 +77,7 @@ void cycleColors() {
 }
 
 void checkButtons() {
+  
   int buttonPressed = 0;
   
   if (button_down(BUTTON1)) {
@@ -75,14 +107,14 @@ void checkButtons() {
       buttonDownFlag = 1;
     }
     break;
-
+      
   case 3:
     if (!buttonDownFlag) {
       rotateSquare();
       buttonDownFlag = 1;
     }
     break;
-
+      
   case 4:
     if (!buttonDownFlag) {
       cycleColors();

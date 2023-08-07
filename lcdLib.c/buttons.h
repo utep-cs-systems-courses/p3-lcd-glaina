@@ -14,4 +14,6 @@ void button_interrupt_handler();
 int button_down(unsigned char button);
 static char button_update_interrupt_sense();
 
+extern int buttons;
+
 #endif // included
