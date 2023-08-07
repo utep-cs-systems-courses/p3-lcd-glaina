@@ -3,13 +3,15 @@
 
 #include <msp430.h>
 
-#define BUTTON1 BIT1 // P1.1
-#define BUTTON2 BIT2 // P1.2
-#define BUTTON3 BIT3 // P1.3
-#define BUTTON4 BIT4 // P1.4
-#define BUTTONS (BIT1|BIT2|BIT3|BIT4)
+#define BUTTON1 1 // P1.1
+#define BUTTON2 2 // P1.2
+#define BUTTON3 4 // P1.3
+#define BUTTON4 8 // P1.4
+#define BUTTONS 15
 
 void buttons_init();
+void button_interrupt_handler();
 int button_down(unsigned char button);
+static char button_update_interrupt_sense();
 
 #endif // included

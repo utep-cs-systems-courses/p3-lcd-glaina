@@ -1,4 +1,5 @@
 #include <msp430.h>
+#include <stdint.h>
 #include <libTimer.h>
 #include "lcdutils.h"
 #include "lcddraw.h"
@@ -12,6 +13,8 @@ int squareSize = SQUARE_SIZE; // Current size of the square (initially 20)
 
 u_int colors[] = {COLOR_RED, COLOR_GREEN, COLOR_BLUE}; // Array of colors to cycle through
 int currentColorIndex = 0; // Index of the current color in the array
+
+int buttonDownFlag = 0; // flag to track if a button is currently pressed
 
 void drawSquare() {
   fillRectangle(squareX - squareSize/2, squareY - squareSize/2, squareSize, squareSize, colors[currentColorIndex]);
@@ -42,6 +45,56 @@ void cycleColors() {
   drawSquare();
 }
 
+void checkButtons() {
+  int buttonPressed = 0;
+  
+  if (button_down(BUTTON1)) {
+    buttonPressed = 1;
+  }
+  else if (button_down(BUTTON2)) {
+    buttonPressed = 2;
+  }
+  else if (button_down(BUTTON3)) {
+    buttonPressed = 3;
+  }
+  else if (button_down(BUTTON4)) {
+    buttonPressed = 4;
+  }
+
+  switch(buttonPressed) {
+  case 1:
+    if (!buttonDownFlag) {
+      growSquare();
+      buttonDownFlag = 1;
+    }
+    break;
+
+  case 2:
+    if (!buttonDownFlag) {
+      shrinkSquare();
+      buttonDownFlag = 1;
+    }
+    break;
+
+  case 3:
+    if (!buttonDownFlag) {
+      rotateSquare();
+      buttonDownFlag = 1;
+    }
+    break;
+
+  case 4:
+    if (!buttonDownFlag) {
+      cycleColors();
+      buttonDownFlag = 1;
+    }
+    break;
+
+  default:
+    buttonDownFlag = 0;
+  }
+}
+
 void main() {
   WDTCTL = WDTPW | WDTHOLD; // Disable Watchdog Timer
 
@@ -51,22 +104,18 @@ void main() {
 
   clearScreen(BLACK);
   drawSquare();
-
+  
   while (1) {
-    if (button_down(BUTTON1)) {
-      growSquare();
-    } else if (button_down(BUTTON2)) {
-      shrinkSquare();
-    } else if (button_down(BUTTON3)) {
-      rotateSquare();
-    } else if (button_down(BUTTON4)) {
-      cycleColors();
-    }
+     checkButtons();
   }
+  
 }
 
 void __interrupt_vec(PORT2_VECTOR) Port_2() {
   if (P2IFG & BUTTONS) {
     P2IFG &= ~BUTTONS;
+    button_interrupt_handler();
   }
 }
+
+
